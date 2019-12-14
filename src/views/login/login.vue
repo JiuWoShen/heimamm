@@ -53,8 +53,6 @@
           <el-button type="primary" class="registerBtn">注册</el-button>
         </el-form-item>
       </el-form>
-
-      <!--  -->
     </div>
     <!-- 右边图片 -->
     <img class="login-img" src="../../assets/login_banner_ele.png" alt />
