@@ -13,11 +13,16 @@
       <!-- 表单 -->
       <!-- 关联表单验证规则 -->
       <el-form class="login_form" ref="form" :model="form" :rules="rules">
-          <!-- 每项通过 prop 关联 -->
+        <!-- 每项通过 prop 关联 -->
         <el-form-item prop="phone">
-          <el-input v-model="form.phone" placeholder="手机号" class="phone" prefix-icon="el-icon-user">手机</el-input>
+          <el-input
+            v-model="form.phone"
+            placeholder="手机号"
+            class="phone"
+            prefix-icon="el-icon-user"
+          >手机</el-input>
         </el-form-item>
-        <el-form-item  prop="password">
+        <el-form-item prop="password">
           <el-input
             v-model="form.password"
             class="pass"
@@ -28,14 +33,11 @@
         </el-form-item>
         <el-form-item prop="capture">
           <el-col :span="18">
-            <el-input
-              v-model="form.capture"
-              class="check"
-              prefix-icon="el-icon-key"
-            >验证码</el-input>
+            <el-input v-model="form.capture" class="check" prefix-icon="el-icon-key">验证码</el-input>
           </el-col>
           <el-col :span="6">
-            <img src="../../assets/login_capture.png" alt />
+            <!-- 点击可以更新验证码 -->
+            <img :src="captuURL" alt="" @click="captureClick" />
           </el-col>
         </el-form-item>
 
@@ -63,21 +65,21 @@
 <script>
 export default {
   data() {
-     // 自定义验证规则：---手机号
-  var checkPhone = (rule, value, callback) => {
-    // 判断是否为空
-        if (!value) {
-          callback(new Error('手机号不能为空'));
+    // 自定义验证规则：---手机号
+    var checkPhone = (rule, value, callback) => {
+      // 判断是否为空
+      if (!value) {
+        callback(new Error("手机号不能为空"));
+      } else {
+        // 判断手机号格式---正则
+        var checked = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+        if (checked.test(value) == true) {
+          callback();
         } else {
-          // 判断手机号格式---正则
-          var checked=/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
-          if (checked.test(value)==true) {
-            callback();
-          }else{
-            callback(new Error('手机号格式错误'));
-          }
+          callback(new Error("手机号格式错误"));
         }
-      };
+      }
+    };
     return {
       form: {
         name: "",
@@ -88,43 +90,65 @@ export default {
       },
       rules: {
         // prop名对应这里验证规则名
-        phone:[{ required: true,validator:checkPhone,trigger: "change" }],
+        phone: [{ required: true, validator: checkPhone, trigger: "change" }],
         password: [
-          { required: true, message: '请输入密码', trigger: 'change' },
-          { min: 6, max: 18, message: "长度在 6 到 18 个字符", trigger: "change" }
+          { required: true, message: "请输入密码", trigger: "change" },
+          {
+            min: 6,
+            max: 18,
+            message: "长度在 6 到 18 个字符",
+            trigger: "change"
+          }
         ],
         capture: [
-          { required: true, message: '请输入验证码', trigger: 'change' },
+          { required: true, message: "请输入验证码", trigger: "change" },
           { min: 4, max: 4, message: "验证码长度为 4 ", trigger: "change" }
-        ],
-      }
+        ]
+      },
+      // 验证码请求--地址
+      captuURL: process.env.VUE_APP_BASEURL + '/captcha?type=login',
+
     };
   },
   methods: {
     // 表单表单验证---是否勾选
-    login_check(){
+    login_check() {
       // 判断协议框是否勾选
-      if(this.form.checked != true){
+      if (this.form.checked != true) {
         // 提示用户------ elementUI 提示框
-         this.$message({
+        this.$message({
           showClose: true,
-          message: '请选择同意协议',
-          type: 'warning'
+          message: "请选择同意协议",
+          type: "warning"
         });
         // this.$message.warning('请选择同意协议');
-      }else{
-        this.$refs.form.validate((valid) => {
+      } else {
+        this.$refs.form.validate(valid => {
           if (valid) {
             // 验证成功
-            this.$message.success('登录成功');
+            this.$message({
+              showClose: true,
+              message: "登陆成功",
+              type: "success"
+            });
+            // this.$message.success('登录成功');
           } else {
             // 验证失败
-            this.$message.error('登录失败');
+            this.$message({
+              showClose: true,
+              message: "登陆失败",
+              type: "error"
+            });
+            // this.$message.error("登录失败");
             return false;
           }
         });
       }
-    }
+    },
+    // 点击更换验证码图片------浏览器缓存机制会将相同请求返回同一数据----因此加时间戳或者随机数
+    captureClick(){
+      this.captuURL=process.env.VUE_APP_BASEURL + '/captcha?type=login&' + Date.now();
+    },
   }
 };
 </script>
