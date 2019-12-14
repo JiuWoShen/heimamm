@@ -11,16 +11,28 @@
       </div>
 
       <!-- 表单 -->
-      <el-form class="login_form" ref="form" :model="form">
-        <el-form-item>
-          <el-input v-model="form.name" class="phone" prefix-icon="el-icon-user">手机</el-input>
+      <!-- 关联表单验证规则 -->
+      <el-form class="login_form" ref="form" :model="form" :rules="rules">
+          <!-- 每项通过 prop 关联 -->
+        <el-form-item prop="phone">
+          <el-input v-model="form.phone" placeholder="手机号" class="phone" prefix-icon="el-icon-user">手机</el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input v-model="form.password" class="pass" show-password prefix-icon="el-icon-lock">密码</el-input>
+        <el-form-item  prop="password">
+          <el-input
+            v-model="form.password"
+            class="pass"
+            show-password
+            prefix-icon="el-icon-lock"
+            placeholder="密码"
+          >密码</el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="capture">
           <el-col :span="18">
-            <el-input v-model="form.capture" class="check" prefix-icon="el-icon-key">验证码</el-input>
+            <el-input
+              v-model="form.capture"
+              class="check"
+              prefix-icon="el-icon-key"
+            >验证码</el-input>
           </el-col>
           <el-col :span="6">
             <img src="../../assets/login_capture.png" alt />
@@ -38,33 +50,61 @@
         <!-- 按钮 -->
         <el-form-item>
           <el-button type="primary" @click="login">登录</el-button>
-          <el-button type="primary" class="registerBtn" @click="register">注册</el-button>
+          <el-button type="primary" class="registerBtn">注册</el-button>
         </el-form-item>
       </el-form>
+
+      <!--  -->
     </div>
     <!-- 右边图片 -->
     <img class="login-img" src="../../assets/login_banner_ele.png" alt />
-
-    
   </div>
 </template>
 
 <script>
 export default {
   data() {
+     // 自定义验证规则：---手机号
+  var checkPhone = (rule, value, callback) => {
+    // 判断是否为空
+        if (!value) {
+          callback(new Error('手机号不能为空'));
+        } else {
+          // 判断手机号格式---正则
+          var checked=/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+          if (checked.test(value)==true) {
+            callback();
+          }else{
+            callback(new Error('手机号格式错误'));
+          }
+        }
+      };
     return {
       form: {
         name: "",
         password: "",
         capture: "",
+        // 勾选框的初始值
         checked: false
       },
+      rules: {
+        // prop名对应这里验证规则名
+        phone:[{ required: true,validator:checkPhone,trigger: "change" }],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'change' },
+          { min: 6, max: 18, message: "长度在 6 到 18 个字符", trigger: "change" }
+        ],
+        capture: [
+          { required: true, message: '请输入验证码', trigger: 'change' },
+          { min: 4, max: 4, message: "验证码长度为 4 ", trigger: "change" }
+        ],
+        
+      }
     };
   },
   methods: {
-    login() {},
-    register() {},
- 
+    // 表单表单验证---是否勾选
+    login(){}
   }
 };
 </script>
@@ -148,6 +188,5 @@ export default {
   }
   .login-img {
   }
-  
 }
 </style>
