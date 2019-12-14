@@ -49,7 +49,8 @@
 
         <!-- 按钮 -->
         <el-form-item>
-          <el-button type="primary" @click="login">登录</el-button>
+          <!-- 点击登陆验证整个表单-----包括复选框 -->
+          <el-button type="primary" @click="login_check">登录</el-button>
           <el-button type="primary" class="registerBtn">注册</el-button>
         </el-form-item>
       </el-form>
@@ -96,13 +97,34 @@ export default {
           { required: true, message: '请输入验证码', trigger: 'change' },
           { min: 4, max: 4, message: "验证码长度为 4 ", trigger: "change" }
         ],
-        
       }
     };
   },
   methods: {
     // 表单表单验证---是否勾选
-    login(){}
+    login_check(){
+      // 判断协议框是否勾选
+      if(this.form.checked != true){
+        // 提示用户------ elementUI 提示框
+         this.$message({
+          showClose: true,
+          message: '请选择同意协议',
+          type: 'warning'
+        });
+        // this.$message.warning('请选择同意协议');
+      }else{
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            // 验证成功
+            this.$message.success('登录成功');
+          } else {
+            // 验证失败
+            this.$message.error('登录失败');
+            return false;
+          }
+        });
+      }
+    }
   }
 };
 </script>
