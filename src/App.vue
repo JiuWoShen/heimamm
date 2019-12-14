@@ -1,18 +1,20 @@
 <template>
-  <div id="app">
+  
     <!-- 使用路由 -->
     <router-view></router-view>
-  </div>
+    
 </template>
 
 <script>
-
 export default {
-  name: 'app',
-
-}
+  name: "app",
+  data() {
+      return {
+        value: true
+      }
+    }
+};
 </script>
 
 <style>
-
 </style>
