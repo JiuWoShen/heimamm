@@ -37,7 +37,7 @@
           </el-col>
           <el-col :span="6">
             <!-- 点击可以更新验证码 -->
-            <img :src="captuURL" alt="" @click="captureClick" />
+            <img :src="captuURL" alt @click="captureClick" />
           </el-col>
         </el-form-item>
 
@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     // 自定义验证规则：---手机号
@@ -82,7 +83,7 @@ export default {
     };
     return {
       form: {
-        name: "",
+        phone: "",
         password: "",
         capture: "",
         // 勾选框的初始值
@@ -126,12 +127,21 @@ export default {
         this.$refs.form.validate(valid => {
           if (valid) {
             // 验证成功
-            this.$message({
-              showClose: true,
-              message: "登陆成功",
-              type: "success"
-            });
             // this.$message.success('登录成功');
+
+            // 成功后发送axios请求
+            axios({
+              url:  process.env.VUE_APP_BASEURL + '/login',
+              method: 'post',
+              withCredentials: true,  //允许浏览器带cookie发请求
+              data:{
+                phone: this.form.phone,
+                password:this.form.password,
+                code:this.form.capture
+              }
+            }).then(res=>{
+              window.console.log(res);
+            })
           } else {
             // 验证失败
             this.$message({
