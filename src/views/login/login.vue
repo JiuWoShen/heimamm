@@ -104,8 +104,8 @@
               <el-input v-model="register_form.regis_check" autocomplete="off"></el-input>
             </el-col>
             <el-col :span="6" :offset="1">
-              <!-- 短信验证码 -->
-              <el-button class="chec" @click="ReggetMess">获取用户验证码</el-button>
+              <!-- 短信验证码-------定时段获取短信验证码----disabled按钮禁用的控制 -->
+              <el-button class="chec" :disabled="mesTime !=0"  @click="ReggetMess">{{mesTime==0?'获取用户验证码':`还有${mesTime}s重新获取`}}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -235,6 +235,8 @@ export default {
       uploadUrl: process.env.VUE_APP_BASEURL + "/uploads",
       // 注册-图片验证码的请求-------点击切换
       regCaptchaURL: process.env.VUE_APP_BASEURL + "/captcha?type=sendsms",
+      // 短信验证码的倒计时参数----默认是没有倒计时的
+      mesTime:0,
     };
   },
   methods: {
@@ -325,6 +327,14 @@ export default {
       ) {
         return this.$message.error("验证码不正确，请重新填写");
       }
+      // 设置定时器来隔段时间才可以再次获取短信验证码
+      this.mesTime=60;
+      var timeInterval = setInterval(() => {
+        this.mesTime--;
+        if(this.mesTime == 0){
+          clearInterval(timeInterval);
+        }
+      }, 100);
       axios({
         url: process.env.VUE_APP_BASEURL + "/sendsms",
         method: "post",
