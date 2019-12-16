@@ -48,22 +48,74 @@
             <el-link type="primary">隐私条款</el-link>
           </el-checkbox>
         </el-form-item>
-
         <!-- 按钮 -->
         <el-form-item>
           <!-- 点击登陆验证整个表单-----包括复选框 -->
           <el-button type="primary" @click="login_check">登录</el-button>
-          <el-button type="primary" class="registerBtn">注册</el-button>
+          <el-button type="primary" class="registerBtn" @click="dialogFormVisible = true">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
     <!-- 右边图片 -->
     <img class="login-img" src="../../assets/login_banner_ele.png" alt />
+
+    <!-- 对话框 -->
+    <el-dialog title="用户注册" :visible.sync="dialogFormVisible">
+      <el-form :model="register_form">
+        <el-form-item label="头像" :label-width="formLabelWidth">
+        <el-upload
+        class="avatar-uploader"
+        :action="uploadUrl"
+        :show-file-list="false"
+        :on-success="handleAvatarSuccess"
+        :before-upload="beforeAvatarUpload">
+        <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+      </el-upload>
+      </el-form-item>
+        <el-form-item label="昵称" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" :label-width="formLabelWidth">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" :label-width="formLabelWidth">
+          <el-input v-model="form.phone" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" :label-width="formLabelWidth">
+          <el-input v-model="form.pass" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="图形码" :label-width="formLabelWidth">
+          <el-row>
+            <el-col :span="17" :offset="1">
+              <el-input v-model="form.piccode" autocomplete="off"></el-input>
+            </el-col>
+            <el-col :span="6">
+              <img class="chec" src="../../assets/login_capture.png" alt />
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="验证码" :label-width="formLabelWidth">
+          <el-row>
+            <el-col :span="17" :offset="1">
+              <el-input v-model="form.regis_check" autocomplete="off"></el-input>
+            </el-col>
+            <el-col :span="6">
+              <img class="chec" src="../../assets/login_capture.png" alt />
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 export default {
   data() {
     // 自定义验证规则：---手机号
@@ -107,8 +159,23 @@ export default {
         ]
       },
       // 验证码请求--地址
-      captuURL: process.env.VUE_APP_BASEURL + '/captcha?type=login',
+      captuURL: process.env.VUE_APP_BASEURL + "/captcha?type=login",
+      // 注册表单数据
+      register_form: {
+        name: "",
+        email: "",
+        phone: "",
+        pass: "",
+        piccode: "",
+        regis_check: "",
+      },
+      // 上传头像的图像地址
+      imageUrl:'',
+      // 图片上传地址----本地服务器的地址
+      uploadUrl: process.env.VUE_APP_BASEURL + "/uploads",
 
+      dialogFormVisible: false,
+      formLabelWidth: "60px"
     };
   },
   methods: {
@@ -131,17 +198,17 @@ export default {
 
             // 成功后发送axios请求
             axios({
-              url:  process.env.VUE_APP_BASEURL + '/login',
-              method: 'post',
-              withCredentials: true,  //允许浏览器带cookie发请求
-              data:{
+              url: process.env.VUE_APP_BASEURL + "/login",
+              method: "post",
+              withCredentials: true, //允许浏览器带cookie发请求
+              data: {
                 phone: this.form.phone,
-                password:this.form.password,
-                code:this.form.capture
+                password: this.form.password,
+                code: this.form.capture
               }
-            }).then(res=>{
+            }).then(res => {
               window.console.log(res);
-            })
+            });
           } else {
             // 验证失败
             this.$message({
@@ -156,9 +223,30 @@ export default {
       }
     },
     // 点击更换验证码图片------浏览器缓存机制会将相同请求返回同一数据----因此加时间戳或者随机数
-    captureClick(){
-      this.captuURL=process.env.VUE_APP_BASEURL + '/captcha?type=login&' + Date.now();
+    captureClick() {
+      this.captuURL =
+        process.env.VUE_APP_BASEURL + "/captcha?type=login&" + Date.now();
     },
+    // 上传头像--
+      handleAvatarSuccess(res, file) {
+        // 生成本地的临时图片地址
+        this.imageUrl = URL.createObjectURL(file.raw);
+        
+        window.console.log( this.imageUrl);
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      }
+    
   }
 };
 </script>
@@ -241,6 +329,48 @@ export default {
     }
   }
   .login-img {
+  }
+  // 注册验证
+  .el-dialog {
+    width: 603px;
+    .el-dialog__header {
+      text-align: center;
+      background: linear-gradient(
+        to right,
+        rgb(1, 196, 250),
+        rgb(19, 148, 250)
+      );
+    }
+    // 上传头像样式
+    .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  .chec {
+      width: 100%;
+    }
+    .el-form-item{
+      text-align: center;
+    }
   }
 }
 </style>
