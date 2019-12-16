@@ -52,7 +52,7 @@
         <el-form-item>
           <!-- 点击登陆验证整个表单-----包括复选框 -->
           <el-button type="primary" @click="login_check">登录</el-button>
-          <el-button type="primary" class="registerBtn" @click="dialogFormVisible = true">注册</el-button>
+          <el-button type="primary" class="registerBtn" @click="regDialogFormVisible = true">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -60,56 +60,59 @@
     <img class="login-img" src="../../assets/login_banner_ele.png" alt />
 
     <!-- 对话框 -->
-    <el-dialog title="用户注册" :visible.sync="dialogFormVisible">
-      <el-form :model="register_form">
+    <el-dialog title="用户注册" :visible.sync="regDialogFormVisible">
+      <el-form :model="register_form" :rules="regRoules" ref="register_form">
         <el-form-item label="头像" :label-width="formLabelWidth">
-        <el-upload
-        class="avatar-uploader"
-        :action="uploadUrl"
-        :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload">
-        <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-      </el-upload>
-      </el-form-item>
-        <el-form-item label="昵称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-upload
+            class="avatar-uploader"
+            :action="uploadUrl"
+            name='image'
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
         </el-form-item>
-        <el-form-item label="邮箱" :label-width="formLabelWidth">
-          <el-input v-model="form.email" autocomplete="off"></el-input>
+        <el-form-item prop="name" label="昵称" :label-width="formLabelWidth">
+          <el-input v-model="register_form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="手机" :label-width="formLabelWidth">
-          <el-input v-model="form.phone" autocomplete="off"></el-input>
+        <el-form-item prop="email" label="邮箱" :label-width="formLabelWidth">
+          <el-input v-model="register_form.email" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码" :label-width="formLabelWidth">
-          <el-input v-model="form.pass" autocomplete="off"></el-input>
+        <el-form-item prop="phone" label="手机" :label-width="formLabelWidth">
+          <el-input v-model="register_form.phone" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item prop="pass" label="密码" :label-width="formLabelWidth">
+          <el-input v-model="register_form.pass" autocomplete="off"></el-input>
         </el-form-item>
         <!-- 图形验证码 -->
-        <el-form-item label="图形码" :label-width="formLabelWidth">
+        <el-form-item prop="piccode" label="图形码" :label-width="formLabelWidth">
           <el-row>
             <el-col :span="17">
-              <el-input v-model="form.piccode" autocomplete="off"></el-input>
+              <el-input v-model="register_form.piccode" autocomplete="off"></el-input>
             </el-col>
             <el-col :span="6" :offset="1">
               <img class="chec" :src="regCaptchaURL" @click="regclick" alt />
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item label="验证码" :label-width="formLabelWidth">
+        <el-form-item prop="regis_check" label="验证码" :label-width="formLabelWidth">
           <el-row>
-            <el-col :span="17" >
-              <el-input v-model="form.regis_check" autocomplete="off"></el-input>
+            <el-col :span="17">
+              <el-input v-model="register_form.regis_check" autocomplete="off"></el-input>
             </el-col>
-            <el-col :span="6" :offset="1" >
-              <el-button class="chec">获取用户验证码</el-button>
+            <el-col :span="6" :offset="1">
+              <!-- 短信验证码 -->
+              <el-button class="chec" @click="ReggetMess">获取用户验证码</el-button>
             </el-col>
           </el-row>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button @click="regDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="register">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -131,6 +134,20 @@ export default {
           callback();
         } else {
           callback(new Error("手机号格式错误"));
+        }
+      }
+    };
+    var checkEmail = (rule, value, callback) => {
+      // 判断是否为空
+      if (!value) {
+        callback(new Error("邮箱不能为空"));
+      } else {
+        // 判断手机号格式---正则
+        var checked = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+        if (checked.test(value) == true) {
+          callback();
+        } else {
+          callback(new Error("邮箱格式错误"));
         }
       }
     };
@@ -159,7 +176,7 @@ export default {
           { min: 4, max: 4, message: "验证码长度为 4 ", trigger: "change" }
         ]
       },
-      // 验证码请求--地址
+      // 登录-验证码请求--地址
       captuURL: process.env.VUE_APP_BASEURL + "/captcha?type=login",
       // 注册表单数据
       register_form: {
@@ -169,16 +186,55 @@ export default {
         pass: "",
         piccode: "",
         regis_check: "",
+        // 用户头像
+        avatar:'',
+      },
+      regRoules: {
+        // prop名对应这里验证规则名
+        phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
+        email: [{ required: true, validator: checkEmail, trigger: "blur" }],
+        pass: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 6,
+            max: 18,
+            message: "长度在 6 到 18 个字符",
+            trigger: "blur"
+          }
+        ],
+        name: [
+          { required: true, message: "请输入昵称", trigger: "blur" },
+          {
+            min: 2,
+            max: 18,
+            message: "长度在 2 到 18 个字符",
+            trigger: "blur"
+          }
+        ],
+        piccode: [
+          { required: true, message: "请输入验证码", trigger: "blur" },
+          { min: 4, max: 4, message: "验证码长度为 4 ", trigger: "blur" }
+        ],
+        regis_check: [
+          {
+            required: true,
+            message: "请输入短信验证码验证码",
+            trigger: "change"
+          },
+          { min: 4, max: 4, message: "验证码长度为 4 ", trigger: "change" }
+        ]
       },
       // 上传头像的图像地址
-      imageUrl:'',
+      imageUrl: "",
+      // 登录表单的显示
+      dialogFormVisible: false,
+      // 注册表单的显示
+      regDialogFormVisible: false,
+      formLabelWidth: "65px",
       // 图片上传地址----本地服务器的地址
       uploadUrl: process.env.VUE_APP_BASEURL + "/uploads",
-      // 图片验证码的请求-------点击切换
-      regCaptchaURL :process.env.VUE_APP_BASEURL + "/captcha?type=sendsms",
-
-      dialogFormVisible: false,
-      formLabelWidth: "60px"
+      // 注册-图片验证码的请求-------点击切换
+      regCaptchaURL: process.env.VUE_APP_BASEURL + "/captcha?type=sendsms",
     };
   },
   methods: {
@@ -232,29 +288,78 @@ export default {
     },
     // 上传头像
     handleAvatarSuccess(res, file) {
-        // 生成本地的临时图片地址
-        this.imageUrl = URL.createObjectURL(file.raw);
-        
-        window.console.log( this.imageUrl);
-      },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
+      // 生成本地的临时图片地址
+      this.imageUrl = URL.createObjectURL(file.raw);
+      // 将返回的地址保存----------------注册请求参数作为头像地址上传
+      this.register_form.avatar=res.data.file_path;
+      // window.console.log('上传图片' ,res);
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
 
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
-      },
-      // 注册页面的点击切换验证码
-      regclick(){
-        this.regCaptchaURL =
-        process.env.VUE_APP_BASEURL + "/captcha?type=sendsms&" + Date.now();
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
       }
-    
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
+
+    // 注册页面的点击切换验证码
+    regclick() {
+      this.regCaptchaURL =
+        process.env.VUE_APP_BASEURL + "/captcha?type=sendsms&" + Date.now();
+    },
+    // 注册短信验证码功能
+    ReggetMess() {
+      // ----先进行手机号与图形验证码的校验
+      const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+      if (!reg.test(this.register_form.phone)) {
+        return this.$message.error("手机号不正确，请重新填写");
+      }
+      if (
+        this.register_form.piccode == "" ||
+        this.register_form.piccode.length != 4
+      ) {
+        return this.$message.error("验证码不正确，请重新填写");
+      }
+      axios({
+        url: process.env.VUE_APP_BASEURL + "/sendsms",
+        method: "post",
+        // 跨域携带cookie
+        withCredentials: true,
+        data: {
+          phone: this.register_form.phone,
+          code: this.register_form.piccode
+        }
+      }).then(res => {
+        // window.console.log(res);
+        this.$message.success("您的短信验证码为：" + res.data.data.captcha);
+      });
+    },
+    // 点击确定-------实现注册功能
+    register() {
+      // 表单验证----注册表单-------接口注册
+      axios({
+        url: process.env.VUE_APP_BASEURL + "/register&" + Date.now(),
+        method: "post",
+        data: {
+          username: this.register_form.name,
+          phone: this.register_form.phone,
+          email: this.register_form.email,
+          avatar: this.register_form.avatar,
+          password: this.register_form.pass,
+          rcode: this.register_form.piccode
+        }
+      }).then(res=>{
+        // window.console.log(res)
+        if(res.data.code==200){
+          this.regDialogFormVisible = false;
+        }
+      })
+    }
   }
 };
 </script>
@@ -351,33 +456,33 @@ export default {
     }
     // 上传头像样式
     .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  // 
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
-  .chec {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    //
+    .avatar-uploader .el-upload:hover {
+      border-color: #409eff;
+    }
+    .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 178px;
+      height: 178px;
+      line-height: 178px;
+      text-align: center;
+    }
+    .avatar {
+      width: 178px;
+      height: 178px;
+      display: block;
+    }
+    .chec {
       width: 100%;
     }
-    .el-form-item{
+    .el-form-item {
       text-align: center;
     }
   }
