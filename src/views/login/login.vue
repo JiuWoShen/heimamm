@@ -85,23 +85,24 @@
         <el-form-item label="密码" :label-width="formLabelWidth">
           <el-input v-model="form.pass" autocomplete="off"></el-input>
         </el-form-item>
+        <!-- 图形验证码 -->
         <el-form-item label="图形码" :label-width="formLabelWidth">
           <el-row>
-            <el-col :span="17" :offset="1">
+            <el-col :span="17">
               <el-input v-model="form.piccode" autocomplete="off"></el-input>
             </el-col>
-            <el-col :span="6">
-              <img class="chec" src="../../assets/login_capture.png" alt />
+            <el-col :span="6" :offset="1">
+              <img class="chec" :src="regCaptchaURL" @click="regclick" alt />
             </el-col>
           </el-row>
         </el-form-item>
         <el-form-item label="验证码" :label-width="formLabelWidth">
           <el-row>
-            <el-col :span="17" :offset="1">
+            <el-col :span="17" >
               <el-input v-model="form.regis_check" autocomplete="off"></el-input>
             </el-col>
-            <el-col :span="6">
-              <img class="chec" src="../../assets/login_capture.png" alt />
+            <el-col :span="6" :offset="1" >
+              <el-button class="chec">获取用户验证码</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -173,6 +174,8 @@ export default {
       imageUrl:'',
       // 图片上传地址----本地服务器的地址
       uploadUrl: process.env.VUE_APP_BASEURL + "/uploads",
+      // 图片验证码的请求-------点击切换
+      regCaptchaURL :process.env.VUE_APP_BASEURL + "/captcha?type=sendsms",
 
       dialogFormVisible: false,
       formLabelWidth: "60px"
@@ -227,8 +230,8 @@ export default {
       this.captuURL =
         process.env.VUE_APP_BASEURL + "/captcha?type=login&" + Date.now();
     },
-    // 上传头像--
-      handleAvatarSuccess(res, file) {
+    // 上传头像
+    handleAvatarSuccess(res, file) {
         // 生成本地的临时图片地址
         this.imageUrl = URL.createObjectURL(file.raw);
         
@@ -245,6 +248,11 @@ export default {
           this.$message.error('上传头像图片大小不能超过 2MB!');
         }
         return isJPG && isLt2M;
+      },
+      // 注册页面的点击切换验证码
+      regclick(){
+        this.regCaptchaURL =
+        process.env.VUE_APP_BASEURL + "/captcha?type=sendsms&" + Date.now();
       }
     
   }
@@ -349,6 +357,7 @@ export default {
     position: relative;
     overflow: hidden;
   }
+  // 
   .avatar-uploader .el-upload:hover {
     border-color: #409EFF;
   }
