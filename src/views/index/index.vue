@@ -16,7 +16,7 @@
       <el-aside class="myaside" width='auto'>
         <!-- 导航菜单 -->
         <el-menu :collapse="isCollapse"
-          default-active="/index/user"
+          default-active="/index/user"   
           class="el-menu-vertical-demo" router>
           <el-menu-item index="/index/chart">
             <i class="el-icon-pie-chart"></i>
