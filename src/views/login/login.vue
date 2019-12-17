@@ -119,7 +119,8 @@
 </template>
 
 <script>
-import axios from "axios";
+import {login, sendsms,register} from '../../api/login.js';
+// import axios from "axios";
 export default {
   data() {
     // 自定义验证规则：---手机号
@@ -258,7 +259,7 @@ export default {
             // this.$message.success('登录成功');
 
             // 成功后发送axios请求
-            axios({
+           /*  axios({
               url: process.env.VUE_APP_BASEURL + "/login",
               method: "post",
               withCredentials: true, //允许浏览器带cookie发请求
@@ -267,7 +268,15 @@ export default {
                 password: this.form.password,
                 code: this.form.capture
               }
-            }).then(res => {
+            }) */
+            login({
+                phone: this.form.phone,
+                password: this.form.password,
+                code: this.form.capture
+              }).then(res => {
+                /* if(res.data.code==200){
+
+                } */
               window.console.log(res);
             });
           } else {
@@ -335,16 +344,10 @@ export default {
           clearInterval(timeInterval);
         }
       }, 100);
-      axios({
-        url: process.env.VUE_APP_BASEURL + "/sendsms",
-        method: "post",
-        // 跨域携带cookie
-        withCredentials: true,
-        data: {
+      sendsms({
           phone: this.register_form.phone,
           code: this.register_form.piccode
-        }
-      }).then(res => {
+        }).then(res => {
         // window.console.log(res);
         this.$message.success("您的短信验证码为：" + res.data.data.captcha);
       });
@@ -352,18 +355,14 @@ export default {
     // 点击确定-------实现注册功能
     register() {
       // 表单验证----注册表单-------接口注册
-      axios({
-        url: process.env.VUE_APP_BASEURL + "/register&" + Date.now(),
-        method: "post",
-        data: {
+      register({
           username: this.register_form.name,
           phone: this.register_form.phone,
           email: this.register_form.email,
           avatar: this.register_form.avatar,
           password: this.register_form.pass,
           rcode: this.register_form.piccode
-        }
-      }).then(res=>{
+        }).then(res=>{
         // window.console.log(res)
         if(res.data.code==200){
           this.regDialogFormVisible = false;
