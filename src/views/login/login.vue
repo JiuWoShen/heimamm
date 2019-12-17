@@ -121,6 +121,7 @@
 <script>
 import {login, sendsms,register} from '../../api/login.js';
 // import axios from "axios";
+import {setToken} from '../../utils/token.js'
 export default {
   data() {
     // 自定义验证规则：---手机号
@@ -274,9 +275,11 @@ export default {
                 password: this.form.password,
                 code: this.form.capture
               }).then(res => {
-                /* if(res.data.code==200){
-
-                } */
+                if(res.data.code===200){
+                    // 将返回的token保存到本地内存中----token抽离
+                    // token抽离是---------直接在localstorage里操作的toke
+                    setToken(res.data.data.token);
+                }
               window.console.log(res);
             });
           } else {
