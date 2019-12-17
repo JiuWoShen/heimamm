@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import {getToken} from '../../utils/token.js'
 export default {
   name: "index",
   data() {
@@ -58,7 +59,14 @@ export default {
   },
   methods: {
     
-  }
+  },
+  // 访问首页应判断是否携带token----尽早判断-----嵌套组件无需再判断，因为想要方文嵌套组件就一定会执行index的生命周期钩子
+  beforeCreate() {
+    if(!getToken()){
+      this.$message.warning('请先登录！');
+      this.$router.push('/login');
+    }
+  },
 };
 </script>
  

@@ -6,12 +6,12 @@ const KEY = 'mmtoken';
 export function setToken(token) {
     localStorage.setItem(KEY, token);
 }
-
-export function getToken(token) {
-    localStorage.getItem(KEY, token);
+// ------取与删只需要 KEY 即可-------无需传参
+export function getToken() {
+    localStorage.getItem(KEY);
 }
 
 
-export function removeToken(token) {
-    localStorage.removeItem(KEY, token);
+export function removeToken() {
+    localStorage.removeItem(KEY);
 }
