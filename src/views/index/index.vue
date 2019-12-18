@@ -7,15 +7,20 @@
         <span>黑马面面</span>
       </div>
       <div class="right">
-        <img :src="$store.state.userPic" alt="">
+        <img :src="$store.state.userPic" alt />
         <span class="userName">{{$store.state.username}}，你好</span>
-        <el-button type="primary" size="small">退出</el-button>
+        <el-button type="primary" size="small" @click="exit">退出</el-button>
       </div>
     </el-header>
     <el-container>
-      <el-aside class="myaside" width='auto'>
+      <el-aside class="myaside" width="auto">
         <!-- 导航菜单--------高亮显示在当前的路由-----$route.path-----当前路由的信息 -->
-        <el-menu :collapse="isCollapse" :default-active="$route.path" class="el-menu-vertical-demo" router>
+        <el-menu
+          :collapse="isCollapse"
+          :default-active="$route.path"
+          class="el-menu-vertical-demo"
+          router
+        >
           <el-menu-item index="/index/chart">
             <i class="el-icon-pie-chart"></i>
             <span slot="title">数据概览</span>
@@ -49,17 +54,47 @@
 <script>
 // import {getToken} from '../../utils/token.js'
 // import {userInfo} from '../../api/user.js'
+
+import { userExit } from "../../api/user.js";
+import {removeToken} from '../../utils/token.js'
+
 export default {
   name: "index",
   data() {
     return {
-      isCollapse: false,
-      username:'',
-      userPic:'',
+      isCollapse: false
     };
   },
   methods: {
-    
+    exit() {
+      this.$confirm("是否退出？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "退出成功!"
+          });
+          userExit().then(res => {
+            // window.console.log(res)
+            if (res.data.code === 200) {
+              // 确认退出返回首页------这里是router路由器的信息-----清除页面用户信息及token
+              this.$router.push("/login");
+              removeToken();
+              this.$store.state.username;
+              this.$store.state.userPic;
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消退出"
+          });
+        });
+    }
   },
   // 访问首页应判断是否携带token----尽早判断-----嵌套组件无需再判断，因为想要方文嵌套组件就一定会执行index的生命周期钩子
   // 迁移到导航守卫中
@@ -72,7 +107,6 @@ export default {
   }, */
   created() {
     // 迁移到 router 中 做更先一步的 token 判断
-
     /* userInfo().then(res=>{
       if(res.data.code === 200){
         // 将用户信息渲染
@@ -86,7 +120,7 @@ export default {
       }
       window.console.log(res);
     }) */
-  },
+  }
 };
 </script>
  
@@ -99,36 +133,36 @@ export default {
     text-align: center;
     line-height: 60px;
     display: flex;
-    justify-content: space-between;  //两头分布
+    justify-content: space-between; //两头分布
 
-    .left{
+    .left {
       display: flex;
       align-items: center;
-      .icon{
+      .icon {
         font-size: 24px;
         margin-right: 22px;
       }
-      img{
+      img {
         margin-right: 11px;
         width: 33px;
       }
-      span{
+      span {
         font-size: 22px;
       }
     }
     .right {
       display: flex;
       align-items: center;
-      img{
+      img {
         width: 43px;
         height: 43px;
         border-radius: 43px;
         margin-right: 9px;
-        } 
-        .userName{
-          font-size: 14px;
-          margin-right: 38px;
-        }
+      }
+      .userName {
+        font-size: 14px;
+        margin-right: 38px;
+      }
     }
   }
   .el-container {

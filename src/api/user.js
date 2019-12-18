@@ -15,3 +15,14 @@ export function userInfo(){
         }
     })
 }
+// 用户退出
+export function userExit(){
+    return instance({
+        url:'/logout',
+        method:'get',
+        // 请求参数同样需要token
+        headers:{
+            token:getToken(),
+        }
+    })
+}
