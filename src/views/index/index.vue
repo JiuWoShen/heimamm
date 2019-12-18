@@ -7,17 +7,15 @@
         <span>黑马面面</span>
       </div>
       <div class="right">
-        <img src="../../assets/index_header.jpg" alt="">
-        <span class="userName">李达，你好</span>
+        <img :src="$store.state.userPic" alt="">
+        <span class="userName">{{$store.state.username}}，你好</span>
         <el-button type="primary" size="small">退出</el-button>
       </div>
     </el-header>
     <el-container>
       <el-aside class="myaside" width='auto'>
-        <!-- 导航菜单 -->
-        <el-menu :collapse="isCollapse"
-          default-active="/index/user"   
-          class="el-menu-vertical-demo" router>
+        <!-- 导航菜单--------高亮显示在当前的路由-----$route.path-----当前路由的信息 -->
+        <el-menu :collapse="isCollapse" :default-active="$route.path" class="el-menu-vertical-demo" router>
           <el-menu-item index="/index/chart">
             <i class="el-icon-pie-chart"></i>
             <span slot="title">数据概览</span>
@@ -49,12 +47,15 @@
 </template>
 
 <script>
-import {getToken} from '../../utils/token.js'
+// import {getToken} from '../../utils/token.js'
+// import {userInfo} from '../../api/user.js'
 export default {
   name: "index",
   data() {
     return {
       isCollapse: false,
+      username:'',
+      userPic:'',
     };
   },
   methods: {
@@ -63,11 +64,29 @@ export default {
   // 访问首页应判断是否携带token----尽早判断-----嵌套组件无需再判断，因为想要方文嵌套组件就一定会执行index的生命周期钩子
   // 迁移到导航守卫中
   /* beforeCreate() {
+    // token不存在提示用户
     if(!getToken()){
       this.$message.warning('请先登录！');
       this.$router.push('/login');
     }
   }, */
+  created() {
+    // 迁移到 router 中 做更先一步的 token 判断
+
+    /* userInfo().then(res=>{
+      if(res.data.code === 200){
+        // 将用户信息渲染
+        this.username=res.data.data.username;
+        // this.userPic= process.env.VUE_APP_BASEURL + '/' +  res.data.data.avatar;
+        this.userPic= `${process.env.VUE_APP_BASEURL}/${res.data.data.avatar}`;
+      }else if(res.data.code===206){
+        // 在这里进行token判断----网速慢等原因会造成  判断时  页面跳转
+        this.$message.warning('是个高手，请进行常规操作，谢谢！！');
+        this.$router.push('/login');
+      }
+      window.console.log(res);
+    }) */
+  },
 };
 </script>
  

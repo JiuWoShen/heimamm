@@ -12,6 +12,7 @@ import enterprise from '../views/index/enterprise/enterprise.vue'
 import chart from '../views/index/chart/chart.vue'
 
 import {getToken} from "../utils/token"
+import {userInfo} from '../api/user'
 // 注册
 Vue.use(VueRouter)
 // 实例化
@@ -55,16 +56,37 @@ const router = new VueRouter({
     ]
 })
 
+// 导入store
+import store from '../store/store'
+
+
+// element-Ui按需导入
+import {Message} from 'element-ui';
+
 // 导航守卫
 router.beforeEach((to, from, next) => {
-    window.console.log(to, from);
-    if (to.path != '/login' || to.path != '/') {
+    // window.console.log(to, from);
+    if (to.path != '/login') {
         if (!getToken()) {
-            // this.$message.warning('请先登录！');     //message是挂在Vue实例上的----这里访问不到
-            window.alert('请先登录！');
+            Message.warning('请先登录！');     //message是挂在Vue实例上的----这里访问不到
+            // window.alert('请先登录！');
             next('/login');
         } else {
-            next();
+            // 有token-----需判断是否为真的token
+            // next();
+            userInfo().then(res=>{
+                if(res.data.code === 200){
+                  // 页面跳转  并  将用户信息渲染
+                  store.state.username=res.data.data.username;
+                  // this.userPic= process.env.VUE_APP_BASEURL + '/' +  res.data.data.avatar;
+                  store.state.userPic= `${process.env.VUE_APP_BASEURL}/${res.data.data.avatar}`;
+                  next();  //直接next就 OK    ---是放用户通行
+                }else if(res.data.code===206){
+                  Message.warning('是个高手，请进行常规操作，谢谢！！');
+                  next('/login');
+                }
+                window.console.log(res);
+              })
         }
     } else {
         next();

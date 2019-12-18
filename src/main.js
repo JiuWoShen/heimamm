@@ -8,6 +8,9 @@ import 'element-ui/lib/theme-chalk/index.css';
 // 导入全局样式
 import './style/base.css'
 
+//导入store
+import store from './store/store' 
+
 // 注册
 Vue.use(ElementUI);
 
@@ -18,6 +21,7 @@ window.console.log(process.env.VUE_APP_BASEURL)
 
 new Vue({
   // 注入
+  store,
   router,
   render: h => h(App),
 }).$mount('#app')

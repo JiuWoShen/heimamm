@@ -334,10 +334,7 @@ export default {
       if (!reg.test(this.register_form.phone)) {
         return this.$message.error("手机号不正确，请重新填写");
       }
-      if (
-        this.register_form.piccode == "" ||
-        this.register_form.piccode.length != 4
-      ) {
+      if (this.register_form.piccode == "" || this.register_form.piccode.length != 4){
         return this.$message.error("验证码不正确，请重新填写");
       }
       // 设置定时器来隔段时间才可以再次获取短信验证码
@@ -352,7 +349,7 @@ export default {
           phone: this.register_form.phone,
           code: this.register_form.piccode
         }).then(res => {
-        // window.console.log(res);
+        window.console.log(res);
         this.$message.success("您的短信验证码为：" + res.data.data.captcha);
       });
     },
