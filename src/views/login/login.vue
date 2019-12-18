@@ -279,6 +279,7 @@ export default {
                     // 将返回的token保存到本地内存中----token抽离
                     // token抽离是---------直接在localstorage里操作的toke
                     setToken(res.data.data.token);
+                    this.$router.push('/index');
                 }
               window.console.log(res);
             });
