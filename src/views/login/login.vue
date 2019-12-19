@@ -281,7 +281,7 @@ export default {
                     setToken(res.data.data.token);
                     this.$router.push('/index');
                 }
-              window.console.log(res);
+              // window.console.log(res);
             });
           } else {
             // 验证失败

@@ -7,8 +7,9 @@
         <span>黑马面面</span>
       </div>
       <div class="right">
-        <img :src="$store.state.userPic" alt />
-        <span class="userName">{{$store.state.username}}，你好</span>
+        <img :src="userInfo.avatar" alt />
+        <!-- 计算属性处理过的 提交载荷数据 当做属性来使用 -->
+        <span class="userName">{{userInfo.username}}，你好</span>
         <el-button type="primary" size="small" @click="exit">退出</el-button>
       </div>
     </el-header>
@@ -64,6 +65,12 @@ export default {
     return {
       isCollapse: false
     };
+  },
+  computed: {
+    // 当做属性来使用
+    userInfo(){
+      return this.$store.state.userMess;
+    }
   },
   methods: {
     exit() {
@@ -178,7 +185,7 @@ export default {
       }
     }
     .mymain {
-      background-color: aqua;
+      background:rgba(232,233,236,1);
       height: 100%;
     }
   }

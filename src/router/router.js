@@ -63,10 +63,14 @@ import store from '../store/store'
 // element-Ui按需导入
 import {Message} from 'element-ui';
 
+// 声明一个白名单----地址数组
+const whitePath=['/login','/'];
+
 // 导航守卫
 router.beforeEach((to, from, next) => {
     // window.console.log(to, from);
-    if (to.path != '/login') {
+    // 不在白名单需要 token认证 ----  不需要区分大小写
+    if (whitePath.includes(to.path.toLocaleLowerCase()) == false ) {
         if (!getToken()) {
             Message.warning('请先登录！');     //message是挂在Vue实例上的----这里访问不到
             // window.alert('请先登录！');
@@ -77,15 +81,17 @@ router.beforeEach((to, from, next) => {
             userInfo().then(res=>{
                 if(res.data.code === 200){
                   // 页面跳转  并  将用户信息渲染
-                  store.state.username=res.data.data.username;
+                  res.data.data.avatar= `${process.env.VUE_APP_BASEURL}/${res.data.data.avatar}`;
+
+                //   store.state.username=res.data.data.username;
+                    store.commit('userInfo',res.data.data);
                   // this.userPic= process.env.VUE_APP_BASEURL + '/' +  res.data.data.avatar;
-                  store.state.userPic= `${process.env.VUE_APP_BASEURL}/${res.data.data.avatar}`;
                   next();  //直接next就 OK    ---是放用户通行
                 }else if(res.data.code===206){
                   Message.warning('是个高手，请进行常规操作，谢谢！！');
                   next('/login');
                 }
-                window.console.log(res);
+                window.console.log(res.data.data);
               })
         }
     } else {

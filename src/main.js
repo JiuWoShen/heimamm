@@ -20,7 +20,7 @@ Vue.config.productionTip = false
 window.console.log(process.env.VUE_APP_BASEURL)
 
 new Vue({
-  // 注入
+  // 注入 
   store,
   router,
   render: h => h(App),
