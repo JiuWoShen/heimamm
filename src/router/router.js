@@ -91,7 +91,7 @@ router.beforeEach((to, from, next) => {
                   Message.warning('是个高手，请进行常规操作，谢谢！！');
                   next('/login');
                 }
-                window.console.log(res.data.data);
+                // window.console.log(res.data.data);
               })
         }
     } else {

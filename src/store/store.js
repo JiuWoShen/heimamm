@@ -13,7 +13,6 @@ const store = new Vuex.Store({
         userInfo (state,newUserMess) {
             // 数据变化时  将state数据修改
           state.userMess=newUserMess
-
         }
     }
 })

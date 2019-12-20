@@ -1,18 +1,12 @@
-// 创建axios
-import axios from 'axios'
-import {getToken} from '../utils/token'
-const instance = axios.create({
-    baseURL:process.env.VUE_APP_BASEURL,  //项目基地址
-    withCredentials: true,//允许浏览器携带cookie发送请求
-})
+// 导入请求
+import instance from '../utils/request'
+
+
 // 将请求方法暴露出去------用户信息请求
 export function userInfo(){
     return instance({
         url:'/info',
         method:'get',
-        headers:{
-            token:getToken(),
-        }
     })
 }
 // 用户退出
@@ -21,8 +15,5 @@ export function userExit(){
         url:'/logout',
         method:'get',
         // 请求参数同样需要token
-        headers:{
-            token:getToken(),
-        }
     })
 }
