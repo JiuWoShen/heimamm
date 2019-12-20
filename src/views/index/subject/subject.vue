@@ -6,22 +6,22 @@
         <!-- 上面卡片的表单 -->
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item class="smallInput" label="学科编号">
-            <el-input class="sub" v-model="formInline.num"></el-input>
+            <el-input class="sub" v-model="formInline.rid"></el-input>
           </el-form-item>
           <el-form-item label="学科名称">
             <el-input class="sub" v-model="formInline.name"></el-input>
           </el-form-item>
           <el-form-item class="smallInput" label="创建者">
-            <el-input class="sub" v-model="formInline.creater"></el-input>
+            <el-input class="sub" v-model="formInline.username"></el-input>
           </el-form-item>
           <el-form-item label="状态">
-            <el-select v-model="formInline.state" placeholder="请选择状态">
+            <el-select v-model="formInline.status" placeholder="请选择状态">
               <el-option label="禁用" value="0"></el-option>
               <el-option label="启用" value="1"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item class="btnSmall">
-            <el-button type="primary" @click="search">搜索</el-button>
+            <el-button type="primary" @click="getData">搜索</el-button>
             <el-button @click="delet">清除</el-button>
             <!-- 字体图标有点大，就先用加号吧----- icon='el-icon-plus' -->
             <el-button type="primary" @click="addFormVisible= true">+ 新增学科</el-button>
@@ -94,23 +94,21 @@ export default {
         // 创建者
         username: "",
         // 状态
-        short_name:'',
-        create_time:'',
-
+        status:'',
       },
       // 下面卡片的表格数据
       tableData: [
         {
-          num: "",
+          rid: "",
           name: "",
-          jian: "",
-          creater: "",
-          creatDate: "",
-          state: '',
+          // short_name: "",
+          username: "",
+          create_time: "",
+          status: '',
         }
       ],
       // 分页数据
-      currentPage: 4,  //当前显示页数
+      currentPage: 1,  //当前显示页数
       totalPage:0,    //这里总要给个初始数字
       pageSize:[3,5,9], //每页多少条数据------相应total/pagesize就是会有几页----然后页码条也会相应变化
       limit:3,
@@ -120,11 +118,7 @@ export default {
     };
   },
   methods: {
-    search() {
-      
-    },
     delet() {
-      
     },
     // 上面表单操作事件
     handleEdit(row){ //这里是形参
@@ -156,7 +150,12 @@ export default {
     // 刷新页面数据
     getData(){
       // 获取学科列表------传参渲染全部数据
-    listSubject().then(res=>{
+    listSubject({
+      // 传参----搜索条件
+      page:this.currentPage,
+      limit:this.limit,
+      ...this.formInline,
+    }).then(res=>{
       window.console.log('获取',res);
       if(res.code===200){
         // 返回的学科数据
@@ -167,6 +166,7 @@ export default {
     })
     },
   },
+  // 一进页面就发请求渲染数据
   created() {
     this.getData();
   },
