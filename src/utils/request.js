@@ -2,7 +2,7 @@
 // 学科api抽离
 // 导入axios
 import axios from 'axios'
-import { getToken } from './token';
+import { getToken } from '../utils/token';
 // 将axios抽离------instance
 // axios.defaults 只能设置一个 axios对象
 // 如果项目中 可能用到多个 axios 支持创建一个
@@ -26,8 +26,8 @@ instance.interceptors.request.use(function (config) {
 
 // 返回数据的拦截------可以筛选返回数据层级-------返回状态
 instance.interceptors.response.use(function (response) {
-    window.console.log("相应数据后")
-    window.console.log(response.data)
+    // window.console.log("相应数据后")
+    // window.console.log(response.data)
     return response.data;
   }, function (error) {
     return Promise.reject(error);

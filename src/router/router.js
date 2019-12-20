@@ -86,7 +86,7 @@ router.beforeEach((to, from, next) => {
                 //   store.state.username=res.data.data.username;
                     store.commit('userInfo',res.data.data);
                   // this.userPic= process.env.VUE_APP_BASEURL + '/' +  res.data.data.avatar;
-                  next();  //直接next就 OK    ---是放用户通行
+                  next();  //直接next就 OK    ---放用户通行
                 }else if(res.data.code===206){
                   Message.warning('是个高手，请进行常规操作，谢谢！！');
                   next('/login');

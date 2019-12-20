@@ -1,3 +1,5 @@
+// 抽离api 
+// 学科api抽离
 // 导入axios
 import axios from 'axios'
 // 将axios抽离------instance
@@ -6,10 +8,8 @@ import axios from 'axios'
 // 后续的接口调用直接用  instance 即可
 const instance=axios.create({
     baseURL: process.env.VUE_APP_BASEURL,//项目基地址
-    /* timeout: 1000,
-    headers: {'X-Custom-Header': 'foobar'} */
     withCredentials: true, //允许浏览器带cookie发请求----跨域携带cookie
-  });
+});
 
 // 暴露  请求  接口  export  方法名  ----login
 export function login(data){
