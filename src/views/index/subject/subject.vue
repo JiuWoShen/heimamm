@@ -34,31 +34,36 @@
         <!-- 下面的表格 -->
         <el-table :data="tableData" stripe style="width: 100%">
           <el-table-column type="index" label="序号" width="70"></el-table-column>
-          <el-table-column prop="num" label="学科编号" width="100"></el-table-column>
+          <el-table-column prop="rid" label="学科编号" width="100"></el-table-column>
           <el-table-column prop="name" label="学科名称" width="170"></el-table-column>
-          <el-table-column prop="jian" label="简称" width="90"></el-table-column>
-          <el-table-column prop="creater" label="创建者" width="90"></el-table-column>
-          <el-table-column prop="creatDate" label="创建日期" width="150"></el-table-column>
-          <el-table-column prop="state" label="状态" width="100"></el-table-column>
+          <el-table-column prop="short_name" label="简称" width="90"></el-table-column>
+          <el-table-column prop="username" label="创建者" width="90"></el-table-column>
+          <el-table-column prop="create_time" label="创建日期" width="150"></el-table-column>
+          <el-table-column prop="status" label="状态" width="100">
+            <!-- 自定义行模板 -->
+            <template slot-scope="scope">
+            <span v-if="scope.row.status==1">启用</span>
+            <span v-else class="red">禁用</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="opration" label="操作">
             <template slot-scope="scope">
-              <el-button type="text" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button type="text" @click="handleForbidden(scope.$index, scope.row)">禁用</el-button>
-              <el-button type="text" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button type="text" @click="handleChange(scope.row)">{{scope.row.status === 1?'禁用':'启用'}}</el-button>
+              <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
         <!-- 分页 -->
-        <el-pagination
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total='totalPage'
-        ></el-pagination>
+        <el-pagination background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-sizes="pageSize"
+      :page-size="limit"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="totalPage">
+    </el-pagination>
       </el-card>
     </el-col>
   </el-row>
@@ -71,8 +76,9 @@
 // 导入子组件
 import addSubject from './components/addSubject'
 // 导入请求方法
-import {listSubject} from '../../../api/subject.js'
+import {statusSubject,listSubject} from '../../../api/subject.js'
 export default {
+  name:'subject',
   // 注册子组件
   components:{
     addSubject
@@ -82,13 +88,15 @@ export default {
       // 上面卡片  表单的数据
       formInline: {
         // 学科编号
-        num: "",
+        rid: "",
         // 学科名称
         name: "",
         // 创建者
-        creater: "",
+        username: "",
         // 状态
-        state: ""
+        short_name:'',
+        create_time:'',
+
       },
       // 下面卡片的表格数据
       tableData: [
@@ -101,10 +109,11 @@ export default {
           state: '',
         }
       ],
-
       // 分页数据
-      currentPage: '',
-      totalPage:'',
+      currentPage: 4,  //当前显示页数
+      totalPage:0,    //这里总要给个初始数字
+      pageSize:[3,5,9], //每页多少条数据------相应total/pagesize就是会有几页----然后页码条也会相应变化
+      limit:3,
 
       // 新增表单的显示与否
       addFormVisible: false,
@@ -118,14 +127,24 @@ export default {
       
     },
     // 上面表单操作事件
-    handleEdit(index,row){ //这里是形参
-      window.console.log(index, row);
+    handleEdit(row){ //这里是形参
+      window.console.log(row);
     },
-    handleForbidden(index,row){
-      window.console.log(index, row);
+    handleChange(row){
+      // 调用该状态接口
+      statusSubject({
+        id:row.id
+      }).then(res=>{
+        window.console.log(res);
+        if(res.code===200){
+          this.$message.success('状态修改成功！');
+          this.getData();
+        }
+      })
+      window.console.log(row);
     },
-    handleDelete(index,row){
-      window.console.log(index, row);
+    handleDelete(row){
+      window.console.log(row);
     },
     // 分页方法
     handleSizeChange(val) {
@@ -136,14 +155,14 @@ export default {
     },
     // 刷新页面数据
     getData(){
-      // 获取学科列表
+      // 获取学科列表------传参渲染全部数据
     listSubject().then(res=>{
       window.console.log('获取',res);
       if(res.code===200){
-        this.tableData=res.data.items;
-        this.totalPage=res.pagination.total;
-        this.currentPage=res.data.pagination.page;
-        // window.console.log(this.tableData);
+        // 返回的学科数据
+        this.tableData = res.data.items;
+        // 总页数
+        this.totalPage = res.data.pagination.total;
       }
     })
     },
@@ -174,6 +193,9 @@ export default {
     .el-pagination {
       margin-top: 30px;
       text-align: center;
+    }
+    .red{
+      color: red;
     }
   }
 }
