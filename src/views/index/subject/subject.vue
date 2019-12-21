@@ -33,13 +33,13 @@
       <el-card shadow="always" class="bottomCard">
         <!-- 下面的表格 -->
         <el-table :data="tableData" stripe style="width: 100%">
-          <el-table-column type="index" label="序号" width="70"></el-table-column>
-          <el-table-column prop="rid" label="学科编号" width="100"></el-table-column>
-          <el-table-column prop="name" label="学科名称" width="170"></el-table-column>
-          <el-table-column prop="short_name" label="简称" width="90"></el-table-column>
-          <el-table-column prop="username" label="创建者" width="90"></el-table-column>
-          <el-table-column prop="create_time" label="创建日期" width="150"></el-table-column>
-          <el-table-column prop="status" label="状态" width="100">
+          <el-table-column type="index" label="序号"></el-table-column>
+          <el-table-column prop="rid" label="学科编号"></el-table-column>
+          <el-table-column prop="name" label="学科名称"></el-table-column>
+          <el-table-column prop="short_name" label="简称"></el-table-column>
+          <el-table-column prop="username" label="创建者"></el-table-column>
+          <el-table-column prop="create_time" label="创建日期"></el-table-column>
+          <el-table-column prop="status" label="状态">
             <!-- 自定义行模板 -->
             <template slot-scope="scope">
             <span v-if="scope.row.status==1">启用</span>
@@ -69,19 +69,22 @@
   </el-row>
    <!-- 子组件的使用----当做标签 -->
     <addSubject></addSubject>
+    <editSubject ref="editruleForm"></editSubject>
 </div>
 </template>
 
 <script>
 // 导入子组件
 import addSubject from './components/addSubject'
+import editSubject from './components/editSubject'
 // 导入请求方法
 import {statusSubject,listSubject,removeSubject} from '../../../api/subject.js'
 export default {
   name:'subject',
   // 注册子组件
   components:{
-    addSubject
+    addSubject,
+    editSubject,
   },
   data() {
     return {
@@ -115,6 +118,7 @@ export default {
 
       // 新增表单的显示与否
       addFormVisible: false,
+      editFormVisible: false,
     };
   },
   methods: {
@@ -127,6 +131,11 @@ export default {
     },
     // 上面表单操作事件
     handleEdit(row){ //这里是形参
+    // 编辑逻辑
+    // 表单显示
+      this.editFormVisible=true;
+      // 给子组件的表单赋值--------复杂类型的赋值------采用深拷贝
+      this.$refs.editruleForm.editSubjectForm=JSON.parse(JSON.stringify(row));
       window.console.log(row);
     },
       // 调用该状态接口
