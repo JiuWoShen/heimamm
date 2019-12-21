@@ -76,7 +76,7 @@
 // 导入子组件
 import addSubject from './components/addSubject'
 // 导入请求方法
-import {statusSubject,listSubject} from '../../../api/subject.js'
+import {statusSubject,listSubject,removeSubject} from '../../../api/subject.js'
 export default {
   name:'subject',
   // 注册子组件
@@ -118,14 +118,19 @@ export default {
     };
   },
   methods: {
+    // 清除搜索
     delet() {
+      for(var key in this.formInline) {
+        this.formInline[key]='';
+      }
+      this.getData();
     },
     // 上面表单操作事件
     handleEdit(row){ //这里是形参
       window.console.log(row);
     },
-    handleChange(row){
       // 调用该状态接口
+    handleChange(row){
       statusSubject({
         id:row.id
       }).then(res=>{
@@ -135,21 +140,42 @@ export default {
           this.getData();
         }
       })
-      window.console.log(row);
+      // window.console.log(row);
     },
+      // 数据删除
     handleDelete(row){
-      window.console.log(row);
+      // window.console.log('删除数据',row);
+      this.$confirm('确定要删除吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          removeSubject({
+            id:row.id
+          }).then(res=>{
+            // window.console.log(res);
+            if(res.code===200){
+              this.$message.success('删除成功');
+              this.getData();
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
     },
     // 分页方法
-    handleSizeChange(val) {
       // 页容量改变回调函数
+    handleSizeChange(val) {
       window.console.log(`每页 ${val} 条`);
       this.limit=val;
       // 重新获取数据
       this.getData();
     },
-    handleCurrentChange(val) {
       // 当前页的回调函数
+    handleCurrentChange(val) {
       this.currentPage=val;
       window.console.log(`当前页: ${val}`);
       // 重新获取数据
@@ -164,7 +190,7 @@ export default {
       limit:this.limit,
       ...this.formInline,
     }).then(res=>{
-      window.console.log('获取',res);
+      // window.console.log('获取',res);
       if(res.code===200){
         // 返回的学科数据
         this.tableData = res.data.items;
