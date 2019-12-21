@@ -109,9 +109,9 @@ export default {
       ],
       // 分页数据
       currentPage: 1,  //当前显示页数
-      totalPage:0,    //这里总要给个初始数字
-      pageSize:[3,5,9], //每页多少条数据------相应total/pagesize就是会有几页----然后页码条也会相应变化
-      limit:3,
+      totalPage:0,    //数据总条数------这里总要给个初始数字
+      pageSize:[3,5,9], //页容量选项----每页多少条数据------相应total/pagesize就是会有几页----然后页码条也会相应变化
+      limit:5,    //每页有几条
 
       // 新增表单的显示与否
       addFormVisible: false,
@@ -142,10 +142,18 @@ export default {
     },
     // 分页方法
     handleSizeChange(val) {
+      // 页容量改变回调函数
       window.console.log(`每页 ${val} 条`);
+      this.limit=val;
+      // 重新获取数据
+      this.getData();
     },
     handleCurrentChange(val) {
+      // 当前页的回调函数
+      this.currentPage=val;
       window.console.log(`当前页: ${val}`);
+      // 重新获取数据
+      this.getData();
     },
     // 刷新页面数据
     getData(){
