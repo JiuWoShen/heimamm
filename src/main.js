@@ -11,6 +11,9 @@ import './style/base.css'
 //导入store
 import store from './store/store' 
 
+// 导入全局过滤器
+import './filters/filters.js'
+
 // 注册
 Vue.use(ElementUI);
 

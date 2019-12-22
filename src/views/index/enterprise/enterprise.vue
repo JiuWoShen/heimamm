@@ -37,7 +37,11 @@
           <el-table-column prop="eid" label="企业编号"></el-table-column>
           <el-table-column prop="name" label="企业名称"></el-table-column>
           <el-table-column prop="username" label="创建者"></el-table-column>
-          <el-table-column prop="create_time" label="创建日期"></el-table-column>
+          <el-table-column prop="create_time" label="创建日期">
+            <template slot-scope="scope">
+                {{scope.row.create_time | formatTime}}
+            </template>
+          </el-table-column>
           <el-table-column prop="status" label="状态">
             <!-- 自定义行模板 -->
             <template slot-scope="scope">
@@ -78,6 +82,7 @@ import addenterprise from './components/addenterprise'
 import editenterprise from './components/editenterprise'
 // 导入请求方法
 import {listEnterprise,removeEnterprise,statusEnterprise} from '../../../api/enterprise'
+
 export default {
   name:'subject',
   // 注册子组件
