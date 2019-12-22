@@ -39,6 +39,7 @@
 <script>
 // 导入新增请求
 import { adduser } from "../../../../api/userManager";
+import {checkEmail,checkPhone} from '../../../../utils/validator'
 export default {
   data() {
     return {
@@ -54,9 +55,9 @@ export default {
           { required: true, message: "用户名不得为空", trigger: "blur" }
         ],
         // 邮箱是确切匹配
-        email: [{ required: true, message: "邮箱不得为空", trigger: "blur" }],
+        email: [{ required: true, validator: checkEmail, trigger: "blur" }],
         phone: [
-          { required: true, message: "电话不得为空", trigger: "blur" }
+          { required: true, validator: checkPhone, trigger: "blur" }
         ],
         role: [
           { required: true, message: "角色不得为空", trigger: "blur" }

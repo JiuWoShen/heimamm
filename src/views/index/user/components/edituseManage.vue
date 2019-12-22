@@ -12,7 +12,7 @@
           <el-input class="sub" v-model="editUsemanage.phone" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="角色" prop="role" :label-width="formLabelWidth">
-          <el-select v-model="editUsemanage.role_id" placeholder="请选择角色">
+          <el-select v-model="editUsemanage.role" placeholder="请选择角色">
             <el-option label="管理员" value="2"></el-option>
             <el-option label="老师" value="3"></el-option>
             <el-option label="学生" value="4"></el-option>
@@ -45,11 +45,7 @@ export default {
       // 新增表单数据
     //   表单显示控件在父组件中
       editUsemanage: {
-        name: "",
-        rid: "",
-        intro:'',
-        short_name: "",
-        remark:'',
+        
       },
       formLabelWidth: "80px",
       // 表单验证规则
@@ -72,7 +68,7 @@ export default {
     // 点击确定----实现新增
     editSub(){
       // 新增将整个表单的数据传过去
-      edituser(this.editUser).then(res=>{
+      edituser(this.editUsemanage).then(res=>{
         window.console.log(res);
         if(res.code===200){
           this.$parent.getData();

@@ -34,9 +34,9 @@
         <!-- 下面的表格 -->
         <el-table :data="tableData" stripe style="width: 100%">
           <el-table-column type="index" label="序号"></el-table-column>
-          <el-table-column prop="eid" label="企业编号"></el-table-column>
-          <el-table-column prop="name" label="企业名称"></el-table-column>
-          <el-table-column prop="username" label="创建者"></el-table-column>
+          <el-table-column prop="eid" label="企业编号🍅"></el-table-column>
+          <el-table-column prop="name" label="企业名称🍏"></el-table-column>
+          <el-table-column prop="username" label="创建者🍓"></el-table-column>
           <el-table-column prop="create_time" label="创建日期">
             <template slot-scope="scope">
                 {{scope.row.create_time | formatTime}}
@@ -49,7 +49,7 @@
             <span v-else class="red">禁用</span>
             </template>
           </el-table-column>
-          <el-table-column prop="opration" label="操作">
+          <el-table-column prop="opration" label="操作🌽">
             <template slot-scope="scope">
               <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
               <el-button type="text" @click="handleChange(scope.row)">{{scope.row.status === 1?'禁用':'启用'}}</el-button>
@@ -139,7 +139,7 @@ export default {
     // 表单显示
       this.editFormVisible=true;
       // 给子组件的表单赋值--------复杂类型的赋值------采用深拷贝
-      this.$refs.editruleForm.editSubjectForm=JSON.parse(JSON.stringify(row));
+      this.$refs.editruleForm.editenterForm=JSON.parse(JSON.stringify(row));
       window.console.log(row);
     },
       // 调用该状态接口

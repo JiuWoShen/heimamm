@@ -34,16 +34,16 @@
         <!-- 下面的表格 -->
         <el-table :data="tableData" stripe style="width: 100%">
           <el-table-column type="index" label="序号"></el-table-column>
-          <el-table-column prop="rid" label="学科编号"></el-table-column>
-          <el-table-column prop="name" label="学科名称"></el-table-column>
-          <el-table-column prop="short_name" label="简称"></el-table-column>
-          <el-table-column prop="username" label="创建者"></el-table-column>
+          <el-table-column prop="rid" label="学科编号🍊"></el-table-column>
+          <el-table-column prop="name" label="学科名称🍓"></el-table-column>
+          <el-table-column prop="short_name" label="简称🍑"></el-table-column>
+          <el-table-column prop="username" label="创建者🍍"></el-table-column>
           <el-table-column prop="create_time" label="创建日期">
             <template slot-scope="scope">
               {{scope.row.create_time | formatTime}}
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="状态">
+          <el-table-column prop="status" label="状态🍆">
             <!-- 自定义行模板 -->
             <template slot-scope="scope">
             <span v-if="scope.row.status==1">启用</span>

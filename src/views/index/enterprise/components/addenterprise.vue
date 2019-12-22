@@ -8,10 +8,10 @@
       <el-form-item label="企业名称" prop='name' :label-width="formLabelWidth">
         <el-input class="sub" v-model="addenterprise.name" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="企业简介" :label-width="formLabelWidth">
+      <el-form-item label="企业简介" prop='intro' :label-width="formLabelWidth">
         <el-input class="sub" v-model="addenterprise.intro" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="企业简称" :label-width="formLabelWidth">
+      <el-form-item label="企业简称" prop='short_name' :label-width="formLabelWidth">
         <el-input class="sub" v-model="addenterprise.short_name" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="企业备注" :label-width="formLabelWidth">
@@ -53,7 +53,7 @@ export default {
         short_name: [
             { required: true, message: '企业简称不得为空', trigger: 'blur' },
           ],
-        remark: [
+        intro: [
             { required: true, message: '企业简介不得为空', trigger: 'blur' },
           ],
       }

@@ -5,6 +5,6 @@ import moment from 'moment'
             // 过滤器名
 vue.filter('formatTime',function(time){
     //       想要的时间格式      回调函数--传入要处理的时间
-    return moment(time).format('YYYY-MM-DD');
+    return moment(time).format('YYYY🍒MM🍇DD');
 
 })

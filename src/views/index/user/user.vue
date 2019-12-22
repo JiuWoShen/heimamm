@@ -78,7 +78,7 @@ import edituseManage from './components/edituseManage'
 // 导入请求方法
 import {listuser,removeuser,statususer} from '../../../api/userManager'
 export default {
-  name:'subject',
+  name:'user',
   // 注册子组件
   components:{
     edituseManage,
@@ -93,12 +93,7 @@ export default {
       // 下面卡片的表格数据
       tableData: [
         {
-          eid: "",
-          name: "",
-          // short_name: "",
-          username: "",
-          create_time: "",
-          status: '',
+          
         }
       ],
       // 分页数据

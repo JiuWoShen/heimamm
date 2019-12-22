@@ -2,16 +2,16 @@
   <div class="editenter">
     <el-dialog title="编辑企业" :visible.sync="$parent.editFormVisible">
     <el-form :model="editenterForm" :rules="editrules" ref="editruleForm">
-      <el-form-item label="企业编号" prop='rid' :label-width="formLabelWidth">
-        <el-input class="sub" v-model="editenterForm.rid" autocomplete="off"></el-input>
+      <el-form-item label="企业编号" prop='eid' :label-width="formLabelWidth">
+        <el-input class="sub" v-model="editenterForm.eid" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="企业名称" prop='name' :label-width="formLabelWidth">
         <el-input class="sub" v-model="editenterForm.name" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="企业简称" :label-width="formLabelWidth">
+      <el-form-item label="企业简称" prop='short_name' :label-width="formLabelWidth">
         <el-input class="sub" v-model="editenterForm.short_name" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="企业简介" :label-width="formLabelWidth">
+      <el-form-item label="企业简介" prop='intro' :label-width="formLabelWidth">
         <el-input class="sub" v-model="editenterForm.intro" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="企业备注" :label-width="formLabelWidth">
@@ -35,11 +35,7 @@ export default {
       // 新增表单数据
     //   表单显示控件在父组件中
       editenterForm: {
-        name: "",
-        rid: "",
-        intro:'',
-        short_name: "",
-        remark:'',
+
       },
       formLabelWidth: "80px",
       // 表单验证规则
@@ -47,8 +43,14 @@ export default {
         name: [
             { required: true, message: '企业名称不得为空', trigger: 'blur' },
           ],
-        rid: [
+        eid: [
             { required: true, message: '企业编号不得为空', trigger: 'blur' },
+          ],
+        short_name: [
+            { required: true, message: '企业简称不得为空', trigger: 'blur' },
+          ],
+        intro: [
+            { required: true, message: '企业简介不得为空', trigger: 'blur' },
           ],
       }
     };
