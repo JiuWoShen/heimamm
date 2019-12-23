@@ -32,19 +32,19 @@
         <!-- 下面的表格 -->
         <el-table :data="tableData" stripe style="width: 100%">
           <el-table-column type="index" label="序号"></el-table-column>
-          <el-table-column prop="username" label="用户名"></el-table-column>
-          <el-table-column prop="phone" label="电话"></el-table-column>
-          <el-table-column prop="email" label="邮箱"></el-table-column>
-          <el-table-column prop="role" label="角色"></el-table-column>
-          <el-table-column prop="remark" label="备注"></el-table-column>
-          <el-table-column prop="status" label="状态">
+          <el-table-column prop="username" label="用户名🍇"></el-table-column>
+          <el-table-column prop="phone" label="电话🍎"></el-table-column>
+          <el-table-column prop="email" label="邮箱🍑"></el-table-column>
+          <el-table-column prop="role" label="角色🍒"></el-table-column>
+          <el-table-column prop="remark" label="备注🍓"></el-table-column>
+          <el-table-column prop="status" label="状态🎄">
             <!-- 自定义行模板 -->
             <template slot-scope="scope">
             <span v-if="scope.row.status==1">启用</span>
             <span v-else class="red">禁用</span>
             </template>
           </el-table-column>
-          <el-table-column prop="opration" label="操作">
+          <el-table-column prop="opration" label="操作🌽">
             <template slot-scope="scope">
               <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
               <el-button type="text" @click="handleChange(scope.row)">{{scope.row.status === 1?'禁用':'启用'}}</el-button>

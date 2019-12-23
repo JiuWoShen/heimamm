@@ -29,27 +29,51 @@ const router = new VueRouter({
         {
             path: '/index',
             component: index,
+
+            // 路由重定向-------也照样会有权限问题
+            // redirect:'/index/chart',
+
+            // meta
+            meta:{
+                power:['管理员','老师','学生']
+            },
+
             // 嵌套路由
             children: [
                 {
                     path: 'user',
-                    component: user
+                    component: user,
+                    meta:{
+                        power:['管理员']
+                    }
                 },
                 {
                     path: 'subject',
-                    component: subject
+                    component: subject,
+                    meta:{
+                        power:['管理员','老师']
+                    }
                 },
                 {
                     path: 'chart',
-                    component: chart
+                    component: chart,
+                    meta:{
+                        power:['管理员','老师']
+                    }
                 },
                 {
                     path: 'question',
-                    component: question
+                    component: question,
+                    meta:{
+                        power:['管理员','老师','学生']
+                    }
                 },
                 {
                     path: 'enterprise',
-                    component: enterprise
+                    component: enterprise,
+                    meta:{
+                        power:['管理员','老师']
+                    }
                 },
             ]
         },
@@ -81,17 +105,28 @@ router.beforeEach((to, from, next) => {
             userInfo().then(res=>{
                 if(res.data.code === 200){
                   // 页面跳转  并  将用户信息渲染
-                  res.data.data.avatar= `${process.env.VUE_APP_BASEURL}/${res.data.data.avatar}`;
 
-                //   store.state.username=res.data.data.username;
-                    store.commit('userInfo',res.data.data);
-                  // this.userPic= process.env.VUE_APP_BASEURL + '/' +  res.data.data.avatar;
-                  next();  //直接next就 OK    ---放用户通行
+                //   用户的状态为禁用就不可登陆
+                  if(res.data.data.status==1){
+                      res.data.data.avatar= `${process.env.VUE_APP_BASEURL}/${res.data.data.avatar}`;
+                      store.commit('userInfo',res.data.data);
+
+                    //  要去的页面的白名单中有该角色----即可以访问
+                    if(to.meta.power.includes(res.data.data.role)){
+                        next();  //直接next就 OK    ---放用户通行
+                    }else{
+                        Message.warning('你没有访问权限！')
+                    }
+
+                  }else{
+                    //   禁用状态----提示用户
+                    Message.warning('账号被冻结，请联系管理员！');
+                  }
                 }else if(res.data.code===206){
                   Message.warning('是个高手，请进行常规操作，谢谢！！');
                   next('/login');
                 }
-                // window.console.log(res.data.data);
+                window.console.log('登录信息',res.data);
               })
         }
     } else {

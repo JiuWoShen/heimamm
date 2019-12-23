@@ -1,6 +1,6 @@
 <template>
   <div class="edituser">
-    <el-dialog title="新增用户" :visible.sync="$parent.editFormVisible">
+    <el-dialog title="用户编辑" :visible.sync="$parent.editFormVisible">
       <el-form :model="editUsemanage" :rules="editrules" ref="editruleForm">
         <el-form-item label="用户名" prop="username" :label-width="formLabelWidth">
           <el-input class="sub" v-model="editUsemanage.username" autocomplete="off"></el-input>
@@ -20,8 +20,8 @@
         </el-form-item>
         <el-form-item label="状态" :label-width="formLabelWidth">
           <el-select v-model="editUsemanage.status" placeholder="请选择状态">
-            <el-option label="禁用" value="0"></el-option>
-            <el-option label="启用" value="1"></el-option>
+            <el-option label="禁用" :value="0"></el-option>
+            <el-option label="启用" :value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="用户备注" :label-width="formLabelWidth">

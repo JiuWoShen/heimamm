@@ -255,19 +255,12 @@ export default {
                     // token抽离是---------直接在localstorage里操作的toke
                     setToken(res.data.data.token);
                     this.$router.push('/index');
+                }else if(res.data.code==202){
+                  this.$message.error('登录名或验证码或密码错误');
                 }
               // window.console.log(res);
             });
-          } else {
-            // 验证失败
-            this.$message({
-              showClose: true,
-              message: "登陆失败",
-              type: "error"
-            });
-            // this.$message.error("登录失败");
-            return false;
-          }
+          } 
         });
       }
     },
