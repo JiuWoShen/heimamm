@@ -20,28 +20,15 @@
           :collapse="isCollapse"
           :default-active="$route.path"
           class="el-menu-vertical-demo"
-          router
-        >
-          <el-menu-item v-if="['管理员','老师'].includes(userInfo.role)" index="/index/chart">
-            <i class="el-icon-pie-chart"></i>
-            <span slot="title">数据概览</span>
-          </el-menu-item>
-          <el-menu-item v-if="['管理员'].includes(userInfo.role)" index="/index/user">
-            <i class="el-icon-user"></i>
-            <span slot="title">用户列表</span>
-          </el-menu-item>
-          <el-menu-item v-if="['管理员','老师','学生'].includes(userInfo.role)" index="/index/question">
-            <i class="el-icon-edit-outline"></i>
-            <span slot="title">题库列表</span>
-          </el-menu-item>
-          <el-menu-item v-if="['管理员','老师'].includes(userInfo.role)" index="/index/enterprise">
-            <i class="el-icon-office-building"></i>
-            <span slot="title">企业列表</span>
-          </el-menu-item>
-          <el-menu-item v-if="['管理员','老师'].includes(userInfo.role)" index="/index/subject">
-            <i class="el-icon-notebook-2"></i>
-            <span slot="title">学科列表</span>
-          </el-menu-item>
+          router>
+          <!-- 将此段信息进行抽离-至嵌套路由将不同的信息写至meta中--使用循环渲染 -->
+          <!-- template是一个不会渲染至页面的容器，且可以取到行内信息的模板容器 -->
+          <template  v-for='(item,index) in children'>
+              <el-menu-item :key="index" v-if="item.meta.power.includes(userInfo.role)" :index="/index/ + item.path">
+                <i :class='item.meta.icon'></i>
+                <span slot="title">{{item.meta.title}}</span>
+              </el-menu-item>
+          </template>
         </el-menu>
       </el-aside>
       <el-main class="mymain">
@@ -59,11 +46,15 @@
 import { userExit } from "../../api/user.js";
 import {removeToken} from '../../utils/token.js'
 
+// 导入嵌套路由信息
+import children from '../../router/children'
+
 export default {
   name: "index",
   data() {
     return {
-      isCollapse: false
+      isCollapse: false,
+      children, //结构赋值
     };
   },
   computed: {

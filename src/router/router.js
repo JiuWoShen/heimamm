@@ -4,15 +4,13 @@ import VueRouter from 'vue-router'
 // 导入子组件
 import login from '../views/login/login.vue'
 import index from '../views/index/index.vue'
-// 导入嵌套子组件
-import user from '../views/index/user/user.vue'
-import subject from '../views/index/subject/subject.vue'
-import question from '../views/index/question/question.vue'
-import enterprise from '../views/index/enterprise/enterprise.vue'
-import chart from '../views/index/chart/chart.vue'
 
 import {getToken} from "../utils/token"
 import {userInfo} from '../api/user'
+
+// 导入嵌套路由
+import children from './children'
+
 // 注册
 Vue.use(VueRouter)
 // 实例化
@@ -39,43 +37,7 @@ const router = new VueRouter({
             },
 
             // 嵌套路由
-            children: [
-                {
-                    path: 'user',
-                    component: user,
-                    meta:{
-                        power:['管理员']
-                    }
-                },
-                {
-                    path: 'subject',
-                    component: subject,
-                    meta:{
-                        power:['管理员','老师']
-                    }
-                },
-                {
-                    path: 'chart',
-                    component: chart,
-                    meta:{
-                        power:['管理员','老师']
-                    }
-                },
-                {
-                    path: 'question',
-                    component: question,
-                    meta:{
-                        power:['管理员','老师','学生']
-                    }
-                },
-                {
-                    path: 'enterprise',
-                    component: enterprise,
-                    meta:{
-                        power:['管理员','老师']
-                    }
-                },
-            ]
+            children
         },
     ]
 })
@@ -109,6 +71,7 @@ router.beforeEach((to, from, next) => {
                 //   用户的状态为禁用就不可登陆
                   if(res.data.data.status==1){
                       res.data.data.avatar= `${process.env.VUE_APP_BASEURL}/${res.data.data.avatar}`;
+                    //   将此时登录的用户信息存储到共享仓库中
                       store.commit('userInfo',res.data.data);
 
                     //  要去的页面的白名单中有该角色----即可以访问
