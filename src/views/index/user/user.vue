@@ -46,9 +46,10 @@
           </el-table-column>
           <el-table-column prop="opration" label="操作🌽">
             <template slot-scope="scope">
-              <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
+              <!-- 超级管理员可用，其余不可食用------这里我们限制为不可以用的名单----黑名单 -->
+              <el-button type="text" v-hidden='["管理员","老师","学生"]' @click="handleEdit(scope.row)">编辑</el-button>
               <el-button type="text" @click="handleChange(scope.row)">{{scope.row.status === 1?'禁用':'启用'}}</el-button>
-              <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
+              <el-button type="text" v-hidden='["管理员","老师","学生"]' @click="handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>

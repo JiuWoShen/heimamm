@@ -22,6 +22,7 @@
           class="el-menu-vertical-demo"
           router>
           <!-- 将此段信息进行抽离-至嵌套路由将不同的信息写至meta中--使用循环渲染 -->
+          <!-- 但是这里不允许 v-for 与 v-if 的混用----因此加多一个盒子用来分离 v-for 与 v-if -->
           <!-- template是一个不会渲染至页面的容器，且可以取到行内信息的模板容器 -->
           <template  v-for='(item,index) in children'>
               <el-menu-item :key="index" v-if="item.meta.power.includes(userInfo.role)" :index="/index/ + item.path">

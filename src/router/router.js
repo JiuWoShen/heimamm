@@ -33,7 +33,7 @@ const router = new VueRouter({
 
             // meta
             meta:{
-                power:['管理员','老师','学生']
+                power:['超级管理员','管理员','老师','学生']
             },
 
             // 嵌套路由
@@ -89,7 +89,7 @@ router.beforeEach((to, from, next) => {
                   Message.warning('是个高手，请进行常规操作，谢谢！！');
                   next('/login');
                 }
-                window.console.log('登录信息',res.data);
+                window.console.log('登录信息',res.data.data);
               })
         }
     } else {

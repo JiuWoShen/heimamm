@@ -11,7 +11,7 @@ export default [
         path: 'user',
         component: user,
         meta:{
-            power:['管理员'],
+            power:['超级管理员','管理员'],
             icon:'el-icon-user',
             title:'用户列表'
         }
@@ -20,7 +20,7 @@ export default [
         path: 'subject',
         component: subject,
         meta:{
-            power:['管理员','老师'],
+            power:['超级管理员','管理员','老师'],
             icon:'el-icon-notebook-2',
             title:'学科列表'
         }
@@ -29,7 +29,7 @@ export default [
         path: 'chart',
         component: chart,
         meta:{
-            power:['管理员','老师'],
+            power:['超级管理员','管理员','老师'],
             icon:'el-icon-pie-chart',
             title:'数据概览'
         }
@@ -38,7 +38,7 @@ export default [
         path: 'question',
         component: question,
         meta:{
-            power:['管理员','老师','学生'],
+            power:['超级管理员','管理员','老师','学生'],
             icon:'el-icon-edit-outline',
             title:'题库列表'
         }
@@ -47,7 +47,7 @@ export default [
         path: 'enterprise',
         component: enterprise,
         meta:{
-            power:['管理员','老师'],
+            power:['超级管理员','管理员','老师'],
             icon:'el-icon-office-building',
             title:'企业列表'
         }

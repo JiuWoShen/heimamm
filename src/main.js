@@ -14,6 +14,9 @@ import store from './store/store'
 // 导入全局过滤器
 import './filters/filters.js'
 
+// 导入自定义指令集
+import './directives/directives'
+
 // 注册
 Vue.use(ElementUI);
 

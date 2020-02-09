@@ -54,7 +54,7 @@
             <template slot-scope="scope">
               <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
               <el-button type="text" @click="handleChange(scope.row)">{{scope.row.status === 1?'禁用':'启用'}}</el-button>
-              <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
+              <el-button type="text" v-hidden='["老师","学生"]' @click="handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
